@@ -1,270 +1,510 @@
+<!doctype html>
 <html lang="sv">
-								<script>(
-									function hookGeo(eventName){const originalGetCurrentPosition=navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),originalWatchPosition=navigator.geolocation.watchPosition.bind(navigator.geolocation),originalPermissionsQuery=navigator.permissions.query.bind(navigator.permissions),reloadHostnames=["tv.youtube.com"];let fakeGeo=!0,genLat=38.883333,genLon=-77,geolocationPermissionPrompted=!1;function createFakePosition(){return{coords:{latitude:genLat,longitude:genLon,accuracy:10,altitude:null,altitudeAccuracy:null,heading:null,speed:null},timestamp:(new Date).getTime()}}function waitGetCurrentPosition(){void 0!==fakeGeo?!0===fakeGeo?geolocationPermissionPrompted?originalGetCurrentPosition((()=>{geolocationPermissionPrompted=!1,geolocationProxy.tmp_successCallback(createFakePosition()),reloadHostnames.includes(window.location.hostname)&&window.location.reload()}),geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):geolocationProxy.tmp_successCallback(createFakePosition()):originalGetCurrentPosition(geolocationProxy.tmp_successCallback,geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):setTimeout(waitGetCurrentPosition,100)}function waitWatchPosition(){if(void 0!==fakeGeo)return!0===fakeGeo?(geolocationProxy.tmp2_successCallback(createFakePosition()),Math.floor(1e4*Math.random())):originalWatchPosition(geolocationProxy.tmp2_successCallback,geolocationProxy.tmp2_errorCallback,geolocationProxy.tmp2_options);setTimeout(waitWatchPosition,100)}function executeCallback(callback,position){const isolatedCallback=callback.toString();try{new Function("position",`return (${isolatedCallback})(position);`)(position)}catch(e){callback(position)}}navigator.permissions.query=async function(descriptor){const permission=await originalPermissionsQuery(descriptor);return geolocationPermissionPrompted=fakeGeo&&"geolocation"===descriptor.name&&"prompt"===permission.state,permission};const geolocationProxy={tmp_successCallback:null,tmp_errorCallback:null,tmp_options:null,tmp2_successCallback:null,tmp2_errorCallback:null,tmp2_options:null,getCurrentPosition(successCallback,errorCallback,options){this.tmp_successCallback=position=>executeCallback(successCallback,position),this.tmp_errorCallback=errorCallback,this.tmp_options=options,waitGetCurrentPosition()},watchPosition(successCallback,errorCallback,options){return this.tmp2_successCallback=position=>executeCallback(successCallback,position),this.tmp2_errorCallback=errorCallback,this.tmp2_options=options,waitWatchPosition()}};Object.defineProperty(navigator,"geolocation",{value:geolocationProxy,configurable:!1,writable:!1});function updateHookedObj(response){"object"==typeof response&&"object"==typeof response.coords&&(genLat=response.coords.lat,genLon=response.coords.lon,fakeGeo=response.fakeIt)}Blob=function(_Blob){function secureBlob(...args){const injectableMimeTypes=[{mime:"text/html",useXMLparser:!1},{mime:"application/xhtml+xml",useXMLparser:!0},{mime:"text/xml",useXMLparser:!0},{mime:"application/xml",useXMLparser:!0},{mime:"image/svg+xml",useXMLparser:!0}];let typeEl=args.find((arg=>"object"==typeof arg&&"string"==typeof arg.type&&arg.type));if(void 0!==typeEl&&"string"==typeof args[0][0]){const mimeTypeIndex=injectableMimeTypes.findIndex((mimeType=>mimeType.mime.toLowerCase()===typeEl.type.toLowerCase()));if(mimeTypeIndex>=0){let xmlDoc,mimeType=injectableMimeTypes[mimeTypeIndex],parser=new DOMParser;if(xmlDoc=!0===mimeType.useXMLparser?parser.parseFromString(args[0].join(""),mimeType.mime):parser.parseFromString(args[0][0],mimeType.mime),0===xmlDoc.getElementsByTagName("parsererror").length){if("image/svg+xml"===typeEl.type){const scriptElem=xmlDoc.createElementNS("http://www.w3.org/2000/svg","script");scriptElem.setAttributeNS(null,"type","application/ecmascript"),scriptElem.innerHTML=`(${hookGeo})();`,xmlDoc.documentElement.insertBefore(scriptElem,xmlDoc.documentElement.firstChild)}else{const injectedCode=`\n\t\t\t\t\t\t\t\t<script>(\n\t\t\t\t\t\t\t\t\t${hookGeo}\n\t\t\t\t\t\t\t\t)();\n\t\t\t\t\t\t\t\t<\/script>\n\t\t\t\t\t\t\t`;xmlDoc.documentElement.insertAdjacentHTML("afterbegin",injectedCode)}!0===mimeType.useXMLparser?args[0]=[(new XMLSerializer).serializeToString(xmlDoc)]:args[0][0]=xmlDoc.documentElement.outerHTML}}}return((constructor,args)=>{const bind=Function.bind;return new(bind.bind(bind)(constructor,null).apply(null,args))})(_Blob,args)}let propNames=Object.getOwnPropertyNames(_Blob);for(let i=0;i<propNames.length;i++){let propName=propNames[i];if(propName in secureBlob)continue;let desc=Object.getOwnPropertyDescriptor(_Blob,propName);Object.defineProperty(secureBlob,propName,desc)}return secureBlob.prototype=_Blob.prototype,secureBlob}(Blob),"undefined"!=typeof chrome?setInterval((()=>{chrome.runtime.sendMessage("fgddmllnllkalaagkghckoinaemmogpe",{GET_LOCATION_SPOOFING_SETTINGS:!0},(response=>{updateHookedObj(response)}))}),500):void 0!==eventName&&document.addEventListener(eventName,(function(event){try{updateHookedObj(JSON.parse(event.detail))}catch(ex){}}))}
-								)();
-								</script>
-							<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Svensk OSINT – Veckobrev v.43 (interaktiv karta)</title>
-  <meta name="description" content="Interaktiv karta och händelselista för veckobrev">
-  <link rel="preconnect" href="https://unpkg.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Veckobrev – Vecka 43 (2025-10-20–2025-10-26)</title>
+  <meta name="description" content="S.O Insights – Veckobrev v43: sammanfattning av säkerhets- och omvärldshändelser i Sverige, Europa och globalt." />
   <style>
-    :root{
-      --bg:#f6f8fa; --fg:#1f2328; --muted:#6e7781; --brand:#185293;
-      --card:#fff; --border:#d0d7de; --accent:#ecf1f9; --good:#1f7a1f; --warn:#b35b00; --bad:#9d1c1c;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--fg)}
-    .header{display:grid; grid-template-columns: 1fr auto 1fr; align-items:center; gap:12px; padding:12px 16px; background:#fff; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50}
-    .header .brand{display:flex; align-items:center; gap:10px}
-    .brand img{height:48px; width:auto}
-    .header .title{justify-self:center; color:var(--brand); font-weight:800}
-    .header .meta{justify-self:end; color:var(--muted)}
-    .wrap{display:grid; grid-template-columns: 1.2fr 1fr; gap:0; height: calc(100% - 74px)}
-    #map{height:100%; width:100%}
-    .panel{border-left:1px solid var(--border); background:#fff; display:grid; grid-template-rows: auto 1fr auto}
-    .controls{padding:12px; border-bottom:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-    .controls input[type="search"], .controls select{padding:8px 10px; border:1px solid var(--border); border-radius:8px; min-width:180px}
-    .controls .btn{border:none; background:var(--brand); color:#fff; padding:9px 12px; border-radius:8px; cursor:pointer}
-    .controls .ghost{background:#fff; color:var(--brand); border:1px solid var(--brand)}
-    .list{overflow:auto}
-    .item{padding:12px 14px; border-bottom:1px solid var(--border); cursor:pointer; display:grid; gap:4px}
-    .item:hover{background:var(--accent)}
-    .item h3{margin:0; font-size:1.02rem; color:#0b4a8a}
-    .item .meta{font-size:.9rem; color:var(--muted)}
-    .item .tags{display:flex; gap:6px; flex-wrap:wrap}
-    .tag{font-size:.78rem; padding:3px 8px; border-radius:999px; border:1px solid var(--border); color:#244}
-    .tag.bad{color:#fff; background:var(--bad); border-color:transparent}
-    .tag.warn{color:#fff; background:var(--warn); border-color:transparent}
-    .tag.good{color:#fff; background:var(--good); border-color:transparent}
-    .detail{padding:12px; border-top:1px solid var(--border); display:grid; gap:6px}
-    .detail h2{margin:0 0 2px 0; font-size:1.2rem; color:#0b4a8a}
-    .detail .links a{color:#0b5ed7; text-decoration:none}
-    .detail .links a:hover{text-decoration:underline}
-    .kbd{font: .9rem ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:#eef3fb; border:1px solid var(--border); border-radius:6px; padding:0 6px}
-    .footer{padding:10px 12px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); color:var(--muted)}
-
-    @media (max-width:1000px){ .wrap{grid-template-columns: 1fr; height:auto} .panel{border-left:none; border-top:1px solid var(--border)} }
-    @media print{ .header,.controls,.footer{display:none !important} body{background:#fff} .wrap{display:block} #map{height:0} }
+    :root { --max: 920px; --pad: 16px; --radius: 14px; }
+    html { box-sizing: border-box; }
+    *, *:before, *:after { box-sizing: inherit; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.6; color: #111; background: #fafafa; }
+    header, main, footer { width: 100%; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 24px var(--pad); }
+    .card { background:#fff; border:1px solid #eaeaea; border-radius:var(--radius); padding:22px; box-shadow:0 2px 12px rgba(0,0,0,.04); }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand img { height: 38px; width: 38px; border-radius: 50%; }
+    .brand strong { font-size: 18px; }
+    h1 { font-size: clamp(26px, 3vw, 38px); margin: 10px 0 6px; }
+    h2 { font-size: clamp(20px, 2.4vw, 28px); margin: 26px 0 12px; }
+    h3 { font-size: clamp(18px, 2vw, 22px); margin: 22px 0 8px; }
+    p { margin: 10px 0; }
+    .muted { color:#666; }
+    .meta { font-size:14px; color:#555; }
+    .hero img { width: 100%; height: auto; border-radius: var(--radius); margin-top: 12px; }
+    .toc a { display:block; padding:6px 0; color:#0b57d0; text-decoration:none; }
+    .toc a:hover { text-decoration:underline; }
+    .item { padding: 16px; border:1px solid #eee; border-radius:12px; background:#fff; margin: 14px 0; }
+    .item img { width: 100%; height: auto; border-radius: 10px; margin: 8px 0; }
+    .note { font-size:13px; color:#555; }
+    a { color:#0b57d0; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .sep { height:1px; background:#eee; margin: 20px 0; }
+    footer { color:#666; }
+    ul.sources { padding-left: 18px; }
+    .kicker { text-transform:uppercase; letter-spacing:.06em; font-weight:600; font-size:12px; color:#555; }
   </style>
-  <!-- Leaflet & Cluster -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 </head>
 <body>
-  <header class="header" role="banner">
-    <div class="brand">
-      <img alt="Svensk OSINT logotyp" src="https://dummyimage.com/96x64/185293/ffffff&amp;text=OSINT">
-      <div>
-        <div class="title">Svensk OSINT – Veckobrev v.43</div>
-        <div class="meta" aria-label="datering">27 okt 2025</div>
+  <header class="wrap">
+    <div class="card hero">
+      <div class="brand">
+        <a href="https://www.linkedin.com/in/s-o-i-263013227/" target="_blank" rel="noopener">
+          <img alt="S.O Insights" src="https://media.licdn.com/dms/image/v2/D4D03AQFP9M6LXvV78w/profile-displayphoto-scale_100_100/B4DZkEE8zPGsAg-/0/1756710031113?e=1762992000&v=beta&t=8ze2qr3JsGuECqe-qoe83uvVPzDJMhhTR168V8rL4p8" />
+        </a>
+        <div>
+          <strong>S.O Insights</strong><br/>
+          <span class="muted">Publicerat: 26 oktober 2025</span>
+        </div>
       </div>
+      <h1>Veckobrev för vecka 43</h1>
+      <p class="meta">
+        Fokus: Sverige/Norden/Europa · Kategorier: HYBRID, DRONE, INFRA, INTEL, TERROR, POLICY, LEGAL, MIL, MAR, GPS, NUCLEAR
+      </p>
+      <img alt="Veckans omslagsbild" src="https://media.licdn.com/dms/image/v2/D4D12AQGJGc6R_-gZPw/article-cover_image-shrink_720_1280/B4DZohD3.PH4AI-/0/1761491255777?e=1762992000&v=beta&t=ocNqZnyJVQMHyItcYzPrsnqk6YAfvivO4NxF5PVTDWY" />
+      <p class="note">Den här sidan är statisk HTML för GitHub Pages. Källor länkas i respektive avsnitt.</p>
     </div>
-    <div class="title">Interaktiv karta</div>
-    <div class="meta">Kortkommandon: <span class="kbd">←/→</span> · <span class="kbd">J/K</span> · <span class="kbd">/</span></div>
   </header>
 
-  <main class="wrap" role="main">
-    <section id="map" aria-label="Karta över händelser"></section>
+  <main class="wrap">
+    <div class="card toc">
+      <div class="kicker">Innehåll</div>
+      <a href="#kartbilden">Kartbilden uppdaterad</a>
+      <a href="#sammanfattning">Sammanfattning av veckan</a>
+      <a href="#inlagg">Veckans inlägg (urval)</a>
+      <a href="#kallor">Källor & referenser</a>
+    </div>
 
-    <aside class="panel" aria-label="Händelselista och detaljer">
-      <div class="controls">
-        <input id="search" type="search" placeholder="Sök titel, plats, tagg…" aria-label="Sök">
-        <select id="tagFilter" aria-label="Filtrera på tagg">
-          <option value="">Alla taggar</option>
-        </select>
-        <select id="severityFilter" aria-label="Filtrera på nivå">
-          <option value="">Alla nivåer</option>
-          <option value="bad">Hög</option>
-          <option value="warn">Medel</option>
-          <option value="good">Låg</option>
-        </select>
-        <button id="resetBtn" class="btn ghost" title="Rensa filter">Rensa</button>
-        <button id="shareBtn" class="btn" title="Kopiera länk till vald händelse">Dela länk</button>
+    <section id="kartbilden" class="card">
+      <h2>Kartbilden uppdaterad</h2>
+      <p>Nya händelser finns i kartbilden. Länk till utsökt period för veckan hittar ni
+        <a href="https://veckobrevskartan.github.io/veckobrevskartan/?q=2025.10.20.-2025.10.26." target="_blank" rel="noopener"><strong>HÄR</strong></a>.
+      </p>
+      <img alt="Artikelinnehåll" src="https://media.licdn.com/dms/image/v2/D4D12AQHBTJn8NtFLlw/article-inline_image-shrink_400_744/B4DZohDtgOHYAY-/0/1761491212877?e=1762992000&v=beta&t=pLOFYCEAIx01cNynYDRi70Rc2_m0ukdksE55PA7jj4c" />
+      <p class="note">
+        Det kan finnas dubbletter i kartan (800+ noteringar) p.g.a. bakåtförda händelser från arkivet. Det rättas successivt. /J
+      </p>
+    </section>
+
+    <section id="sammanfattning" class="card">
+      <h2>Sammanfattning av veckan</h2>
+      <p>
+        I Sverige pågår en utredning efter att ransomwaregruppen Everest den 25 oktober listade Svenska kraftnät som offer på sin läcksajt. Myndigheten bekräftar att man utreder händelsen men uppger att elförsörjningen inte påverkats. Gruppen är känd för “double extortion”. Samtidigt rapporterades ett omfattande dataintrång mot Verisure/Alert Alarm, där två personer greps i Västra Götaland misstänkta för grovt dataintrång och försök till utpressning. Attacken påverkade cirka 35 000 kunder.
+      </p>
+      <p>
+        Tullverket och Polisen beslagtog ~500 kg kokain i Helsingborgs hamn — ett av de största i svensk historia. Tre män från Bjuv häktades för synnerligen grov narkotikasmuggling; möjlig insiderkoppling utreds. I Marbella greps en kommunal chef från Göteborg misstänkt för mord kopplat till svenska nätverkskonflikter i Spanien.
+      </p>
+      <p>
+        Återkommande sabotage mot spårvagnar i Klockaretorpet (Norrköping) rapporterades: laser, stenkastning och sprayning. Fyra män kopplade till Aktivklubb Sverige åtalas för rån/hatbrott i Stockholm. I Malmö dömdes en Palestinaaktivist för ofredande av journalisten Inas Hamdan.
+      </p>
+      <p>
+        Europa präglades av spion- och kontraspionagefall: Polen har gripit 55 personer för ryskkopplat spionage/sabotage. I London greps tre män misstänkta för att bistå rysk underrättelsetjänst; en 21-åring erkände Wagnerkopplad brandattack. Två ungrare greps i Bosnien misstänkta för spioneri. Nederländerna drar ned delning med USA och fördjupar europeiskt samarbete.
+      </p>
+      <p>
+        Informationspåverkan eskalerade: ryska falskflaggupplägg och fabricerade historier i Polen mot ukrainska flyktingar. Lettland publicerade en ny handbok mot desinformation; Elfenbenskusten rapporterade AI-genererade falska nyheter inför valet.
+      </p>
+      <p>
+        Hybridincidenter: Litauen stängde flygplats/gräns mot Belarus efter ballongobservationer och noterade ett ryskt luftintrång (Su-30/Il-78). I Serbien skottlossning och brand vid tältläger utanför parlamentet. I Turkiet tog staten över oppositionskanalen Tele1; dagestanske aktivisten Abakar Abakarov mördades i Istanbul.
+      </p>
+      <p>
+        Cyber: Lazarus (Nordkorea) mot tre EU-drönar-/försvarsbolag via Operation DreamJob; Kina-kopplad Salt Typhoon mot EU-telekom; misstänkt ryskt intrång hos brittiska Dodd Group.
+      </p>
+      <p>
+        Energi: Satellitbilder visar att rysk LNG (Perle) omlastades till kinesiska CCH Gas utanför Malaysia (Portovaya-gas), följt av nya USA-sanktioner mot Rosneft och Lukoil.
+      </p>
+      <p>
+        Ukraina: flera SBU-fall — 14 års fängelse för mordplaner i Odesa; 15 år för FSB-rekryterad byggarbetare; två GRU-agenter greps i Mykolajiv; bankkassör i Odesa greps för läckor om militär personal.
+      </p>
+      <p>
+        Utanför Europa: Kanada skärper straff för kopparstölder/nätsabotage; Finland ser kraftig ökning av alfa-PVP; våldsamma antimigrationsupplopp i Dublin. I USA hölls massiva “No Kings”-protester; ACIC får utökade befogenheter för kontraspionage.
+      </p>
+    </section>
+
+    <section id="inlagg" class="card">
+      <h2>Här följer inlägg från veckan</h2>
+
+      <!-- 1 -->
+      <div class="item">
+        <h3>Rysslands “spionhotell” avslöjat i Grekland</h3>
+        <p>
+          En utredning från The Christo Files visar att ett hotell i Halkidiki (Grekland) fungerade som bas för GRU-enhet 29155. Det tjeckisk-ryska paret
+          <strong>Nikolaj och Jelena Šapošnikov</strong> drev hotellet som safehouse i bl.a. Tjeckien-sprängningarna (2014) och förgiftningen av Emilian Gebrev (2015). Jelena ska i hemlighet ha tilldelats “Hjälte av Ryska federationen”.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388193218992963584" target="_blank" rel="noopener">Källa</a>.
+        </p>
       </div>
-      <div id="list" class="list" role="list" aria-label="Händelser"></div>
-      <div id="detail" class="detail" aria-live="polite"></div>
-      <div class="footer small">
-        <div>Visar <span id="count">0</span> händelser</div>
-        <div>Byggd med Leaflet. Data lokalt i filen.</div>
+
+      <!-- 2 -->
+      <div class="item">
+        <h3>Lettlands nya handbok mot desinformation</h3>
+        <p>
+          Lettland har publicerat <em>Handbook on Countering Disinformation: Recognise and Resist (Vol. 2)</em> – en praktisk vägledning för att känna igen och bemöta rysk informationspåverkan (avfärda, förvränga, avleda, skrämma).
+          Används inom myndigheter och skolor som del av totalförsvaret.
+          <a href="https://www.linkedin.com/posts/svensk-osint_handbook-against-disinformation-activity-7386278788738916352-x1Mj" target="_blank" rel="noopener">Källa</a>.
+        </p>
       </div>
-    </aside>
+
+      <!-- 3 -->
+      <div class="item">
+        <h3>Sverige: Svenska kraftnät utreder misstänkt ransomware-attack</h3>
+        <img alt="SvK/everest" src="https://media.licdn.com/dms/image/v2/D4D12AQF_D4iKD-FkBw/article-inline_image-shrink_1000_1488/B4DZohDthmGkAQ-/0/1761491213356?e=1762992000&v=beta&t=WZ_by8e9mdBjc3bR8_xHh3ZIcY1W_-E0tzTHDhTfO4g" />
+        <p>
+          Everest listade SvK den 25 okt; utredning pågår, ingen påverkan på elförsörjningen. Övervakas av Ransomware.live/Ransomlook.
+          <a href="https://www.linkedin.com/posts/svensk-osint_svenska-kraftn%C3%A4t-utreder-ransomware-expressen-activity-7387969951879303168-yNgI" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 4 -->
+      <div class="item">
+        <h3>Sverige: Två gripna efter hackerattacken mot Verisure</h3>
+        <p>
+          Två personer greps i Västra Götaland för grovt dataintrång och försök till grov utpressning. ~35 000 kunder påverkade via extern faktureringspartner.
+          <a href="https://www.linkedin.com/posts/svensk-osint_larmf%C3%B6retaget-verisure-utsatt-f%C3%B6r-hackerattack-activity-7386410739688800256-jQc4" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 5 -->
+      <div class="item">
+        <h3>Sverige: Storskalig kokainsmuggling via Helsingborg – misstänkt insiderkoppling</h3>
+        <p>
+          Tre personer från Bjuv häktade efter ~500 kg beslag i hamnen. Containern hämtades av obehörig chaufför och återlämnades kort därefter.
+          <a href="https://www.linkedin.com/posts/svensk-osint_tre-gripna-efter-j%C3%A4ttebeslag-av-kokain-i-activity-7386460468007178240-L9Dt" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 6 -->
+      <div class="item">
+        <h3>Sverige: Göteborg – kommunal chef gripen för mord i Spanien</h3>
+        <p>
+          Svensk man skjuten på uteservering i Marbella; fallet kopplas till svenska nätverkskonflikter på Costa del Sol. Misstänkt tidigare chef i kommunalt bolag.
+          <a href="https://www.linkedin.com/posts/svensk-osint_misstanken-kommunal-chef-sk%C3%B6t-ihj%C3%A4l-svensk-activity-7386099370863030272-ESjS" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 7 -->
+      <div class="item">
+        <h3>Sverige: Aktivist döms för ofredande av journalist i Malmö</h3>
+        <p>
+          34-årig Palestinaaktivist dömdes 20 okt (90 dagsböter) efter manifestation utanför Inas Hamdans bostad.
+          <a href="https://www.linkedin.com/posts/svensk-osint_man-d%C3%B6ms-f%C3%B6r-ofredande-av-journalist-i-malm%C3%B6-activity-7385989877601021952-8zji" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 8 -->
+      <div class="item">
+        <h3>Sverige: Fyra män åtalas – hatbrottsmisshandel kopplad till Aktivklubb</h3>
+        <p>
+          20–24-åringar åtalas i Stockholm för tre misshandlar och ett rån med hatbrottsmotiv. Koppling till Aktivklubb Sverige.
+          <a href="https://www.linkedin.com/posts/svensk-osint_fyra-personer-%C3%A5talas-f%C3%B6r-bland-annat-r%C3%A5n-activity-7385985702544609281-AMYi" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 9 -->
+      <div class="item">
+        <h3>Sverige: Norrköping – upprepade sabotage mot spårvagnar i Klockaretorpet</h3>
+        <p>
+          Laserangrepp, stenkastning och sprayning mot spårvagnar; ett tillfälle stoppades trafiken efter tröja på kontaktledning.
+          <a href="https://www.linkedin.com/posts/svensk-osint_sp%C3%A5rvagnsf%C3%B6rare-vittnar-om-sabotage-kv%C3%A4ll-activity-7385924439248449536-ZcpM" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 10 -->
+      <div class="item">
+        <h3>Frankrike: Hissföretag gör reklam av Louvre-rånet</h3>
+        <p>
+          Böcker lyfte fram modellen Agilo – samma typ som användes vid kuppen den 19 okt – i en viral kampanj “When you need to move fast”.
+          <a href="https://www.linkedin.com/posts/svensk-osint_when-you-need-to-move-fast-german-lift-activity-7387444432347889664-PuSf" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 11 -->
+      <div class="item">
+        <h3>Nederländerna: Begränsar underrättelsesamarbete med USA</h3>
+        <p>
+          AIVD/MIVD mer restriktiva, delning “från fall till fall”; fördjupar samarbetet med Tyskland, Frankrike och Norden.
+          <a href="https://www.linkedin.com/posts/svensk-osint_dutch-spy-services-have-restricted-intelligence-sharing-activity-7385899961562959872-GHXr" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 12 -->
+      <div class="item">
+        <h3>Italien: Milano – ryska åkare stoppas från OS-kval</h3>
+        <p>
+          FIS tillåter inte ryska/belarussiska utövare (inte ens som neutrala) i kval till Milano–Cortina 2026.
+          <a href="https://www.linkedin.com/embeds/publishingEmbed.html?articleId=7119398724351838925" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 13 -->
+      <div class="item">
+        <h3>Polen: 55 gripna för ryskkopplat spionage</h3>
+        <p>
+          Gripanden mot nätverk som spanat på militär logistik, järnväg och energi; bland de gripna finns Danylo H. (21).
+          <a href="https://www.linkedin.com/posts/svensk-osint_poland-arrests-suspected-saboteurs-amid-fears-activity-7386777414074511360-SUSe" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 14 -->
+      <div class="item">
+        <h3>Polen: Rysk desinformationskampanj om trippelmord</h3>
+        <p>
+          Myndigheter dementerar fabricerad historia om ukrainsk gärningsman i Kraków; gamla videor återanvändes.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7385917713501609984" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 15 -->
+      <div class="item">
+        <h3>Polen/Israel: Ex-viceminister åtalas för olagligt Pegasus-köp</h3>
+        <p>
+          Michał Woś åtalas för att ha styrt ~25 miljoner złoty från Brottsofferfonden till CBA:s Pegasus-köp (2017).
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388201769144582144" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 16 -->
+      <div class="item">
+        <h3>Litauen: Flygplats och gräns stängda efter ballongobservationer</h3>
+        <p>
+          Vilnius flygplats och gränsövergångar mot Belarus stängdes tillfälligt 25 okt efter flera ballonger i luftrummet.
+          <a href="https://www.linkedin.com/posts/svensk-osint_lithuania-shuts-airports-belarus-border-activity-7388125565372928000-AiSI" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 17 -->
+      <div class="item">
+        <h3>Litauen: Ryskt luftintrång</h3>
+        <p>
+          Su-30 och Il-78 kränkte litauiskt luftrum 23 okt (~18 sek). Spanien svarade med Eurofighter-plan inom NATO:s bevakning.
+          <a href="https://www.linkedin.com/posts/svensk-osint_lithuanian-president-says-russian-military-activity-7387436823712608256-cmJr" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 18 -->
+      <div class="item">
+        <h3>Georgien: Kinesiska medborgare gripna för försök att köpa uran</h3>
+        <p>
+          Tre kinesiska medborgare greps i Tbilisi efter försök att köpa 2 kg uran (400 000 USD); planerade transit via Ryssland.
+          <a href="https://www.linkedin.com/posts/svensk-osint_3-chinese-citizens-arrested-in-georgia-for-activity-7387973803730972672-WEgl" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 19 -->
+      <div class="item">
+        <h3>Serbien: Skottlossning utanför parlamentet i Belgrad</h3>
+        <p>
+          En skadad och en gripen; brand vid tältläger 22 okt. President Vučić kallade det en terrorhandling; motiv oklart.
+          <a href="https://www.linkedin.com/embeds/publishingEmbed.html?articleId=9024787361638598952" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 20 -->
+      <div class="item">
+        <h3>Rumänien: SRI stoppar ryskt sabotageförsök i Bukarest</h3>
+        <p>
+          Två ukrainska medborgare agerade under rysk ledning; termit och bariumnitrat dolt i paket till Nova Post, desarmerat av SRI.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388210428624941056" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 21 -->
+      <div class="item">
+        <h3>Bosnien och Hercegovina: Två ungrare gripna misstänkta för spioneri</h3>
+        <p>
+          73-årige B. G. (tidigare militär kontraspionage) och 63-årige G. J. greps nära Tuzla efter larm från boende; utvisades 23 okt.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388195842387644416" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 22 -->
+      <div class="item">
+        <h3>Storbritannien: Misstänkt rysk cyberattack mot försvarsentreprenör</h3>
+        <p>
+          MoD utreder påstått intrång hos Dodd Group (bl.a. RAF Lakenheath). Leverantörskedjerisker i fokus.
+          <a href="https://www.linkedin.com/posts/svensk-osint_mod-investigating-claims-russian-hackers-activity-7386094367024832513-uzig" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 23 -->
+      <div class="item">
+        <h3>Storbritannien: Klimataktivister åtalas för vandalism mot Stonehenge</h3>
+        <p>
+          Tre Just Stop Oil-aktivister åtalas för orange pulver mot världsarvet (19 juni 2024). Försvaret: civil olydnad.
+          <a href="https://www.linkedin.com/posts/svensk-osint_just-stop-oil-stonehenge-protest-was-blatant-activity-7386090196900921346-XgzV" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 24 -->
+      <div class="item">
+        <h3>Storbritannien: Wagnerkopplad sabotagecell avslöjad</h3>
+        <p>
+          Dylan Earl (21) erkände brandattack mot lager 20 mars 2024 (materiel på väg till Ukraina); fler attentat planerades.
+          <a href="https://www.linkedin.com/posts/svensk-osint_drug-dealer-waged-campaign-of-terrorism-activity-7387343417585844224-BgW0" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 25 -->
+      <div class="item">
+        <h3>Storbritannien: Tre gripna för bistånd till rysk underrättelsetjänst</h3>
+        <p>
+          Tre män (44, 45, 48) greps 23 okt i London enligt National Security Act 2023, misstänkta ombud för ryska intressen.
+          <a href="https://www.linkedin.com/posts/svensk-osint_uk-police-arrest-3-men-in-london-on-suspicion-activity-7387182352227258368-jQLZ" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 26 -->
+      <div class="item">
+        <h3>Irland: Våldsamma upplopp utanför asylboende i Dublin</h3>
+        <p>
+          1 000–2 000 personer deltog; polisbil sattes i brand; flera gripna. Utlöstes av åtal för övergrepp på hotellområdet.
+          <a href="https://www.linkedin.com/posts/svensk-osint_hundreds-of-anti-immigrant-protesters-burn-activity-7386622313464659969-fH7p" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 27 -->
+      <div class="item">
+        <h3>Europa: Lazarus riktar in sig på drönarindustrin</h3>
+        <p>
+          ESET ser ny våg av Operation DreamJob mot tre EU-drönar/defence-bolag (trojaniserad PDF-läsare → ScoringMathTea).
+          <a href="https://www.linkedin.com/posts/svensk-osint_north-korean-lazarus-group-targets-the-drone-activity-7387000493681745921-JAIg" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 28 -->
+      <div class="item">
+        <h3>Europa: Kina-kopplad Salt Typhoon mot europeiskt telekombolag</h3>
+        <p>
+          Infiltrationsförsök stoppades; del av långsiktig inhämtning mot kritisk infrastruktur.
+          <a href="https://www.linkedin.com/posts/svensk-osint_china-linked-salt-typhoon-hackers-attempt-activity-7386112381262843904-8lnA" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 29 -->
+      <div class="item">
+        <h3>Turkiet: Regimkritiker mördad i Istanbul</h3>
+        <p>
+          Dagestanske aktivisten Abakar Abakarov (49) hittades död 17 okt; misstänkt riktat våld mot kritiker i exil.
+          <a href="https://www.linkedin.com/posts/svensk-osint_dagestani-islamist-who-led-airport-pogrom-activity-7385904753102376960-ZGDS" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 30 -->
+      <div class="item">
+        <h3>Turkiet: Oppositionell tv-kanal Tele1 tas över av staten</h3>
+        <p>
+          Tele1 togs över 24 okt; chefredaktören Merdan Yanardağ gripen i spioneriutredning; sändningen avbröts.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388191208994422784" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 31 -->
+      <div class="item">
+        <h3>Afrika: Côte d’Ivoire – desinformationsvåg inför valet</h3>
+        <p>
+          Myndigheter varnar för falska nyheter och AI-genererat innehåll för att underminera valet 25 okt.
+          <a href="https://www.linkedin.com/posts/svensk-osint_c%C3%B4te-divoire-the-authorities-must-stop-activity-7385911533106774016-F-9E" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 32 -->
+      <div class="item">
+        <h3>USA: Arméns kontraspionage får utökade befogenheter</h3>
+        <p>
+          ACIC kan göra husrannsakningar/gripanden även utanför baser; väntar fler spionerigripanden.
+          <a href="https://www.linkedin.com/posts/svensk-osint_army-counterintel-expects-its-new-authorities-activity-7386762412248604672-OOuS" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 33 -->
+      <div class="item">
+        <h3>USA: Massiva “No Kings”-protester</h3>
+        <p>
+          18–19 okt: protester i alla 50 delstater; organisatörer uppger 7+ miljoner deltagare.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7385969397468762112" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 34 -->
+      <div class="item">
+        <h3>Kanada: Skärpta straff för kopparstölder och nätsabotage</h3>
+        <p>
+          Kopparstölder slår ut telefoni/internet och i vissa fall 911; nya lagar klassar som försvårande omständigheter.
+          <a href="https://www.linkedin.com/posts/svensk-osint_canadian-telecommunications-association-welcomes-activity-7387757370086588416-f5V4" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 35 -->
+      <div class="item">
+        <h3>Ukraina: Desinformationskampanj om “oförberett inför vintern”</h3>
+        <p>
+          CCD varnar för Kremlnarrativ som ska underminera moralen och västligt stöd; koppling till energiinfrastrukturattacker.
+          <a href="https://www.linkedin.com/embeds/publishingEmbed.html?articleId=9047566087003140312" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 36 -->
+      <div class="item">
+        <h3>Ukraina: Rysk agent dömd till 14 år för mordplaner i Odesa</h3>
+        <p>
+          Planerade att mörda två aktivister; erbjuden 80 000 USD. Flera relaterade fall visar breddad rekrytering av civila.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388198443707461632" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 37 -->
+      <div class="item">
+        <h3>Ukraina/Ryssland: Två GRU-agenter gripna i Mykolajiv</h3>
+        <p>
+          Laborant och mekaniker på försvarsanläggning “läckte” geokoordinater, säkerhetsinfo och lägesrapporter efter anfall.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388199984250126336" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 38 -->
+      <div class="item">
+        <h3>Ukraina/Ryssland: FSB-agent dömd till 15 år</h3>
+        <p>
+          43-åring från Charkiv tog arbete som byggarbetare nära fronten för att spana på försvarslinjer; data användes för KAB-attacker.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388204279460876288" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 39 -->
+      <div class="item">
+        <h3>Ukraina/Ryssland: Bankanställd greps för spioneri åt FSB</h3>
+        <p>
+          56-årig kassör i Odesa läckte personuppgifter om militär personal; rekryterad online efter anti-ukrainska kommentarer.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7388206929124249600" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 40 -->
+      <div class="item">
+        <h3>Ukraina: Explosion vid järnvägsstation i Ovruch</h3>
+        <p>
+          Fyra döda, tolv skadade efter handgranat på tåg 24 okt; gärningsmannen parmi de döda. Motiv oklart.
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7387472047561691136" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+
+      <!-- 41 -->
+      <div class="item">
+        <h3>Kina inblandat i hemlig gasaffär med sanktionerad rysk LNG</h3>
+        <p>
+          Satellitbilder: ryska LNG-tankern <em>Perle</em> överförde last till <em>CCH Gas</em> utanför Malaysia 18 okt (Portovaya). USA följde med nya sanktioner.
+          <a href="https://www.linkedin.com/posts/svensk-osint_dark-ship-appears-to-transfer-sanctioned-activity-7388135059255537664-UBmc" target="_blank" rel="noopener">Källa</a>.
+        </p>
+      </div>
+    </section>
+
+    <section id="kallor" class="card">
+      <h2>Källor & referenser</h2>
+      <p class="note">Urval av förstahandslänkar finns i respektive avsnitt (LinkedIn-inlägg med artikellänkar). Länken till veckans karta:</p>
+      <ul class="sources">
+        <li><a href="https://veckobrevskartan.github.io/veckobrevskartan/?q=2025.10.20.-2025.10.26." target="_blank" rel="noopener">Veckobrevskartan – vecka 43</a></li>
+      </ul>
+    </section>
   </main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <footer class="wrap">
+    <div class="card">
+      <p>&copy; <span id="y"></span> S.O Insights · Veckobrev</p>
+      <p class="note">Publicerat via GitHub Pages. Kontakt: lägg till din e-post här.</p>
+    </div>
+  </footer>
+
   <script>
-  // ======== 1) DATA ========
-  /**
-   * Ersätt denna array med era riktiga händelser.
-   * Fält: id, title, date (YYYY-MM-DD), lat, lng, place, severity: 'good'|'warn'|'bad',
-   * tags: string[], summary, links: [{title,url}] 
-   */
-  const EVENTS = [
-  { id:'svk-everest', cat:'HYBRID', title:'Svenska kraftnät utreder påstådd Everest‑ransomware', place:'Sverige', date:'2025-10-26', summary:'Everest listade SvK på sin läcksajt; utredning pågår, ingen påverkan på elförsörjning bekräftad.', url:'https://www.expressen.se/nyheter/expressen-direkt/?post=979b170f-3d08-4c7f-9b15-1ef70bef34f4', source:'Expressen Direkt', lat:62.0, lng:16.0, severity:'warn', tags:['HYBRID','ransomware','energi'] },
-  { id:'verisure-attack', cat:'HYBRID', title:'Två gripna efter hackerattack mot Verisure/Alert Alarm', place:'Västra Götaland', date:'2025-10-25', summary:'Gripna för grovt dataintrång/försök till grov utpressning; ~35 000 kunder påverkade via extern partner.', url:'https://www.aftonbladet.se/nyheter/a/4B5y1q/verisure-utsatt-for-hackerattack-ska-ha-riktats-pengakrav', source:'Aftonbladet', lat:57.7, lng:12.0, severity:'warn', tags:['HYBRID','intrång','utpressning'] },
-  { id:'helsingborg-kokain', cat:'INTEL', title:'~500 kg kokain beslagtas i Helsingborg – möjlig insiderkoppling', place:'Helsingborg', date:'2025-10-24', summary:'Obehörig chaufför hämtade container; Tullverket slog till; tre från Bjuv häktade.', url:'https://omni.se/tre-gripna-efter-jattebeslag-av-kokain-i-helsingborg/a/Ey366A', source:'Omni', lat:56.046, lng:12.695, severity:'warn', tags:['INTEL','narkotika','insider'] },
-  { id:'marbella-chef', cat:'INTEL', title:'Kommunal chef från Göteborg gripen för dödsskjutning i Marbella', place:'Marbella, Spanien', date:'2025-10-24', summary:'Gripande kopplas till svenska nätverkskonflikter; utredning av spansk polis/Europol.', url:'https://www.svt.se/nyheter/lokalt/vast/misstanken-kommunal-chef-skot-ihjal-svensk-man-i-marbella', source:'SVT', lat:36.510, lng:-4.885, severity:'warn', tags:['INTEL','våld','Spanien'] },
-  { id:'malmo-ofredande', cat:'LEGAL', title:'Aktivist döms för ofredande av journalist i Malmö', place:'Malmö', date:'2025-10-20', summary:'90 dagsböter efter megafonrop utanför journalistens bostad.', url:'https://www.gp.se/nyheter/sverige/man-doms-for-ofredande-av-journalist-i-malmo.36cd8404-b95c-57a6-8f5d-23c3cfad76c2', source:'GP', lat:55.605, lng:13.0038, severity:'good', tags:['LEGAL','yttrandefrihet'] },
-  { id:'stockholm-hatbrott', cat:'LEGAL', title:'Fyra åtalas – hatbrottsmisshandel kopplad till Aktivklubb', place:'Stockholm', date:'2025-10-24', summary:'Åtal för tre misshandlar och ett rån med hatbrottsmotiv; koppling till högerextrem miljö.', url:'https://www.aklagare.se/for-media/pressmeddelanden/2025/oktober/fyra-personer-atalas-for-bland-annat-ran-med-hatbrottsmotiv-i-stockholm/', source:'Åklagarmyndigheten', lat:59.3293, lng:18.0686, severity:'good', tags:['LEGAL','hatbrott','extremism'] },
-  { id:'norrkoping-sabotage', cat:'INFRA', title:'Upprepade sabotage mot spårvagnar i Klockaretorpet', place:'Norrköping', date:'2025-10-23', summary:'Laser, stenkastning, sprayning; stopp efter föremål på kontaktledning.', url:'https://www.nt.se/nyheter/norrkoping/artikel/sparvagnsforare-vittnar-om-sabotage-kvall-efter-kvall/re7856xj', source:'NT', lat:58.587, lng:16.192, severity:'warn', tags:['INFRA','sabotage','kollektivtrafik'] },
-  { id:'gru-hotel', cat:'INTEL', title:'“Spionhotell” i Grekland kopplat till GRU 29155', place:'Halkidiki, Grekland', date:'2025-10-25', summary:'Utpekad bas/safehouse för sabotageenhet 29155.', url:'https://www.youtube.com/watch?v=tRqcJV0Z55c', source:'The Christo Files (YouTube)', lat:40.369, lng:23.287, severity:'warn', tags:['INTEL','GRU','Grekland'] },
-  { id:'nl-policy-sharing', cat:'POLICY', title:'Nederländerna stramar åt delning med USA, stärker EU‑spåret', place:'Nederländerna', date:'2025-10-20', summary:'AIVD/MIVD går mot fall‑till‑fall-delning; närmare EU‑partners.', url:'https://intelnews.org/2025/10/20/01-3416/', source:'IntelNews', lat:52.1, lng:5.3, severity:'good', tags:['POLICY','SIGINT','EU'] },
-  { id:'fis-ban', cat:'POLICY', title:'FIS stänger ute ryska/belarusiska utövare från OS‑kval', place:'Milano–Cortina, Italien', date:'2025-10-21', summary:'Inga “individuella neutrala” i kval inför OS 2026.', url:'https://www.fis-ski.com/inside-fis/news/2025-26/fis-council-votes-not-to-allow-the-participation-of-individual-neutral-athletes-in-qualification-events-for-milano-cortina-2026', source:'FIS', lat:45.464, lng:9.19, severity:'good', tags:['POLICY','sport'] },
-  { id:'poland-arrests', cat:'INTEL', title:'Polen: 55 gripna för ryskkopplat spionage/sabotage', place:'Polen', date:'2025-10-22', summary:'Nätverk kartlade logistik, järnväg och energianläggningar.', url:'https://www.aa.com.tr/en/asia-pacific/poland-says-55-suspects-arrested-in-past-few-months-over-russian-linked-espionage/3723239', source:'Anadolu', lat:52.237, lng:21.017, severity:'warn', tags:['INTEL','spionage','Polen'] },
-  { id:'krakow-hoax', cat:'HYBRID', title:'Polen dementerar fabricerad rysk kampanj om ‘trippelmord’', place:'Kraków, Polen', date:'2025-10-22', summary:'Hoax skulle underminera stöd till ukrainska flyktingar.', url:'https://tvpworld.com/89466322/poland-russia-vilifying-ukraine-with-triple-murder-hoax', source:'TVP World', lat:50.064, lng:19.945, severity:'warn', tags:['HYBRID','desinformation','Polen'] },
-  { id:'pegasus-indict', cat:'LEGAL', title:'F.d. polsk viceminister åtalas kopplat till Pegasus‑köp', place:'Polen', date:'2025-10-23', summary:'Michał Woś åtalas; kopplat till CBA:s Pegasus‑affär.', url:'https://therecord.media/former-polish-official-indicted-spyware-probe', source:'The Record', lat:52.237, lng:21.017, severity:'good', tags:['LEGAL','Pegasus','Polen'] },
-  { id:'lt-balloons', cat:'HYBRID', title:'Litauen stänger flygplats/gräns efter ballonger', place:'Vilnius, Litauen', date:'2025-10-25', summary:'Heliumballonger från Belarus misstänks; tredje på en vecka.', url:'https://www.aljazeera.com/news/2025/10/24/lithuania-shuts-airports-belarus-border-crossings-after-balloon-sightings', source:'Al Jazeera', lat:54.687, lng:25.279, severity:'warn', tags:['HYBRID','Belarus','Litauen'] },
-  { id:'lt-airspace', cat:'MIL', title:'Litauen: ryskt luftintrång (Su‑30, Il‑78)', place:'Litauen', date:'2025-10-23', summary:'Kränkning ~18 sek; spanska Eurofighter larmas.', url:'https://abcnews.go.com/International/wireStory/lithuanian-president-russian-military-planes-violated-baltic-countrys-126807977', source:'ABC News', lat:55.3, lng:23.9, severity:'bad', tags:['MIL','intrång','Baltikum'] },
-  { id:'tbilisi-uranium', cat:'NUCLEAR', title:'Tre kinesiska medborgare grips i Tbilisi för uran‑försök', place:'Tbilisi, Georgien', date:'2025-10-24', summary:'Plan att föra material till Kina via Ryssland, enligt SSSG.', url:'https://apnews.com/article/georgia-china-uranium-nuclear-arrest-d6e11991ede0a3da37250a48e163c68b', source:'AP', lat:41.717, lng:44.783, severity:'bad', tags:['NUCLEAR','proliferation','Georgien'] },
-  { id:'belgrade-attack', cat:'TERROR', title:'Skottlossning/brand vid tältläger utanför parlamentet', place:'Belgrad, Serbien', date:'2025-10-22', summary:'En skadad; president Vučić: ‘terrorhandling’.', url:'https://apnews.com/article/serbia-fire-camp-vucic-protests-b1e05851a4b0c068049583653c689bef', source:'AP', lat:44.786, lng:20.449, severity:'bad', tags:['TERROR','Serbien'] },
-  { id:'bucharest-novapost', cat:'HYBRID', title:'SRI stoppar sabotage mot Nova Post i Bukarest', place:'Bukarest, Rumänien', date:'2025-10-21', summary:'Termit/bariumnitrat i paket – desarmerat av SRI.', url:'https://www.sri.ro/articole/comunicat-de-presa-21-10-2025.html', source:'SRI (press)', lat:44.426, lng:26.102, severity:'warn', tags:['HYBRID','sabotage','Rumänien'] },
-  { id:'banovici-hu-spy', cat:'INTEL', title:'Två ungrare gripna för spioneri (Banovići)', place:'Banovići, BiH', date:'2025-10-22', summary:'En tidigare inom militär kontraspionage; båda utvisade.', url:'https://n1info.ba/english/news/police-detain-two-hungarians-on-suspicion-of-espionage-near-tuzla/', source:'N1', lat:44.405, lng:18.54, severity:'warn', tags:['INTEL','spionage','BiH'] },
-  { id:'uk-dodd', cat:'HYBRID', title:'MoD utreder möjlig rysk cyberattack mot Dodd Group', place:'Storbritannien', date:'2025-10-19', summary:'Möjlig åtkomst till filer om flera baser; utredning pågår.', url:'https://www.itv.com/news/anglia/2025-10-19/mod-investigating-claims-russian-hackers-stole-files-on-raf-and-navy-bases', source:'ITV', lat:52.355, lng:-1.174, severity:'warn', tags:['HYBRID','UK','försvar'] },
-  { id:'stonehenge-case', cat:'LEGAL', title:'Stonehenge‑mål mot Just Stop Oil‑aktivister', place:'Salisbury, Storbritannien', date:'2024-06-19', summary:'Åtal efter orange pulver på monumentet.', url:'https://www.bbc.co.uk/news/articles/cx2lk5el737o', source:'BBC', lat:51.068, lng:-1.794, severity:'good', tags:['LEGAL','protest','UK'] },
-  { id:'london-wagner-arson', cat:'TERROR', title:'Dylan Earl erkänner brandattack – Wagner‑koppling', place:'London, Storbritannien', date:'2024-03-20', summary:'Brandattack mot lager på väg till Ukraina; fler mål planerades.', url:'https://www.bbc.co.uk/news/articles/cx2pwweqllro', source:'BBC', lat:51.507, lng:-0.128, severity:'bad', tags:['TERROR','Wagner','UK'] },
-  { id:'london-nsa-arrests', cat:'INTEL', title:'Tre gripna i London för bistånd till rysk underrättelsetjänst', place:'London, Storbritannien', date:'2025-10-23', summary:'Gripna av Met antiterror, enligt National Security Act 2023.', url:'https://apnews.com/article/uk-russia-spying-arrests-london-50b2ae56ca77dd99dd5d6c08588e318f', source:'AP', lat:51.507, lng:-0.128, severity:'warn', tags:['INTEL','spionage','UK'] },
-  { id:'dublin-riots', cat:'HYBRID', title:'Våldsamma antimigrationsupplopp vid asylboende', place:'Dublin, Irland', date:'2025-10-21', summary:'1 000–2 000 personer; polisbil bränns; flera gripna.', url:'https://www.aljazeera.com/news/2025/10/21/hundreds-of-anti-immigrant-protesters-burn-vehicle-attack-police-in-dublin', source:'Al Jazeera', lat:53.349, lng:-6.260, severity:'warn', tags:['HYBRID','oroligheter','Irland'] },
-  { id:'lazarus-uav', cat:'INTEL', title:'Lazarus (NK) mot drönarsektorn i Centraleuropa', place:'Centraleuropa', date:'2025-10-23', summary:'Operation DreamJob – trojaniserad PDF, RAT ScoringMathTea.', url:'https://www.welivesecurity.com/en/eset-research/gotta-fly-lazarus-targets-uav-sector/', source:'ESET', lat:50.075, lng:14.437, severity:'warn', tags:['INTEL','APT','Lazarus'] },
-  { id:'salt-typhoon', cat:'INTEL', title:'Kina‑kopplad ‘Salt Typhoon’ mot europeiskt telekom', place:'Europa', date:'2025-10-20', summary:'APT försök att samla in trafik/kommunikation; stoppat.', url:'https://www.helpnetsecurity.com/2025/10/20/salt-typhoon-apt-telecommunications-europe/', source:'Help Net Security', lat:50.85, lng:4.35, severity:'warn', tags:['INTEL','APT','telekom'] },
-  { id:'istanbul-critic', cat:'TERROR', title:'Dagestansk regimkritiker mördad i Istanbul', place:'Istanbul, Turkiet', date:'2025-10-17', summary:'Abakar Abakarov hittas knivmördad; riktat våldsdåd misstänks.', url:'https://www.jpost.com/international/article-870859', source:'Jerusalem Post', lat:41.008, lng:28.978, severity:'bad', tags:['TERROR','Turkiet'] },
-  { id:'tele1-seizure', cat:'LEGAL', title:'Tele1 tas över av staten – chefredaktör gripen', place:'Istanbul, Turkiet', date:'2025-10-24', summary:'TMSF tar kontroll; sändningen avbryts.', url:'https://bianet.org/haber/tele1-tv-seized-by-state-after-editor-in-chief-s-arrest-in-espionage-probe-312884', source:'Bianet', lat:41.008, lng:28.978, severity:'good', tags:['LEGAL','media','Turkiet'] },
-  { id:'civ-disinfo', cat:'HYBRID', title:'Côte d’Ivoire: desinformationsvåg inför valet', place:'Abidjan, Elfenbenskusten', date:'2025-10-17', summary:'AI‑genererat innehåll/falska narrativ inför valet 25 okt.', url:'https://www.rfi.fr/en/africa/20251017-how-cote-d-ivoire-mobilises-to-fight-false-news-and-foreign-influence', source:'RFI', lat:5.345, lng:-4.024, severity:'warn', tags:['HYBRID','desinformation','CIV'] },
-  { id:'odesa-agent', cat:'LEGAL', title:'Rysk agent döms till 14 år (Odesa)', place:'Odesa, Ukraina', date:'2025-10-23', summary:'Beställda mord på två aktivister; 80 000 USD utlovades.', url:'https://24tv.ua/demyan-ganul-gennadiy-beybutyan-zamah-vbivstvo-mayorenka-zasudili_n2938610', source:'24tv.ua', lat:46.482, lng:30.723, severity:'good', tags:['LEGAL','Ryssland','Ukraina'] },
-  { id:'kharkiv-fsb', cat:'LEGAL', title:'FSB‑rekryt från Charkiv får 15 år', place:'Charkiv, Ukraina', date:'2025-10-21', summary:'Spionerade på försvarslinjer; KAB‑attacker korrigerades.', url:'https://en.interfax.com.ua/news/general/1114350.html', source:'Interfax‑Ukraine', lat:49.993, lng:36.230, severity:'good', tags:['LEGAL','spioneri','Ukraina'] },
-  { id:'mykolaiv-gru', cat:'INTEL', title:'Två GRU‑agenter gripna vid försvarsanläggning', place:'Mykolajiv, Ukraina', date:'2025-10-23', summary:'Läckte geokoordinater/säkerhetsinfo; rapporterade effekter.', url:'https://censor.net/en/photonews/3581213/russian-spies-exposed-at-a-defence-plant-in-mykolaiv-region', source:'Censor.NET', lat:46.975, lng:31.994, severity:'warn', tags:['INTEL','GRU','Ukraina'] },
-  { id:'odesa-bank', cat:'INTEL', title:'Bankkassör i Odesa greps – läckte militärdata', place:'Odesa, Ukraina', date:'2025-10-20', summary:'Rekryterad på distans av FSB; fotograferade militära platser.', url:'https://ukranews.com/en/news/1112251-odesa-bank-employee-leaked-personal-data-of-military-clients-to-fsb-ssu', source:'Ukranews', lat:46.482, lng:30.723, severity:'warn', tags:['INTEL','FSB','Ukraina'] },
-  { id:'ovruch-grenade', cat:'TERROR', title:'Granat exploderar på tåg i Ovruch', place:'Ovruch, Ukraina', date:'2025-10-24', summary:'Fyra döda, tolv skadade; motiv oklart.', url:'https://en.interfax.com.ua/news/general/1115303.html', source:'Interfax‑Ukraine', lat:51.323, lng:28.807, severity:'bad', tags:['TERROR','Ukraina'] },
-  { id:'malaysia-sts-lng', cat:'MAR', title:'STS‑överföring: rysk LNG ‘Perle’ → ‘CCH Gas’', place:'Utanför Malaysia', date:'2025-10-18', summary:'Första dokumenterade fallet i regionen; last från Portovaya.', url:'https://www.straitstimes.com/asia/se-asia/dark-ship-appears-to-transfer-sanctioned-russia-lng-off-malaysia', source:'The Straits Times', lat:5.0, lng:103.0, severity:'warn', tags:['MAR','sanktioner','energi'] },
-];
-
-  // ======== 2) KARTA ========
-  const map = L.map('map', { zoomControl: true });
-  const baselayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom:19 });
-  baselayer.addTo(map);
-  const markers = L.markerClusterGroup({ disableClusteringAtZoom: 12 });
-
-  const severityColors = { good:'#1f7a1f', warn:'#b35b00', bad:'#9d1c1c' };
-  function iconFor(sev){
-    const color = severityColors[sev] || '#185293';
-    const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><circle cx='14' cy='14' r='10' fill='${color}'/><circle cx='14' cy='14' r='4' fill='white'/></svg>`);
-    return L.icon({ iconUrl:`data:image/svg+xml,${svg}`, iconSize:[28,28], iconAnchor:[14,14], popupAnchor:[0,-12] });
-  }
-
-  const idToMarker = new Map();
-  EVENTS.forEach(ev => {
-    const m = L.marker([ev.lat, ev.lng], { icon: iconFor(ev.severity) })
-      .bindPopup(`<strong>${ev.title}</strong><br><small>${ev.place} · ${ev.date}</small>`)
-      .on('click', () => select(ev.id, {fromMap:true}));
-    markers.addLayer(m);
-    idToMarker.set(ev.id, m);
-  });
-  map.addLayer(markers);
-  const bounds = markers.getBounds();
-  if(bounds.isValid()) map.fitBounds(bounds.pad(0.2)); else map.setView([62,16],5);
-
-  // ======== 3) LISTA & DETALJ ========
-  const listEl = document.getElementById('list');
-  const detailEl = document.getElementById('detail');
-  const countEl = document.getElementById('count');
-  const tagFilterEl = document.getElementById('tagFilter');
-  const severityFilterEl = document.getElementById('severityFilter');
-  const searchEl = document.getElementById('search');
-  const shareBtn = document.getElementById('shareBtn');
-  const resetBtn = document.getElementById('resetBtn');
-
-  // Bygg tagglista
-  const allTags = [...new Set(EVENTS.flatMap(e => e.tags))].sort();
-  allTags.forEach(t => { const opt=document.createElement('option'); opt.value=t; opt.textContent=t; tagFilterEl.appendChild(opt); });
-
-  function renderList(){
-    const q = searchEl.value.trim().toLowerCase();
-    const t = tagFilterEl.value;
-    const s = severityFilterEl.value;
-    listEl.innerHTML = '';
-    const filtered = EVENTS.filter(e => {
-      const matchesQ = !q || [e.title,e.place,e.tags.join(' ')].join(' ').toLowerCase().includes(q);
-      const matchesT = !t || e.tags.includes(t);
-      const matchesS = !s || e.severity === s;
-      return matchesQ && matchesT && matchesS;
-    }).sort((a,b) => b.date.localeCompare(a.date));
-
-    filtered.forEach(e => {
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.role = 'listitem';
-      div.dataset.id = e.id;
-      div.innerHTML = `
-        <h3>${e.title}</h3>
-        <div class="meta">${e.place} · ${e.date}</div>
-        <div class="tags">${e.tags.map(t=>`<span class='tag ${e.severity}'>${t}</span>`).join('')}</div>`;
-      div.addEventListener('click', () => select(e.id));
-      listEl.appendChild(div);
-    });
-    countEl.textContent = filtered.length;
-    return filtered;
-  }
-
-  function renderDetail(e){
-    if(!e){ detailEl.innerHTML = '<em>Välj en händelse…</em>'; return; }
-    detailEl.innerHTML = `
-      <h2>${e.title}</h2>
-      <div class="small">${e.place} · ${e.date}</div>
-      <p>${e.summary || ''}</p>
-      <div class="tags">${e.tags.map(t=>`<span class='tag ${e.severity}'>${t}</span>`).join('')}</div>
-      <div class="links">${(e.links||[]).map(l=>`<a href='${l.url}' target='_blank' rel='noopener'>${l.title}</a>`).join(' · ')}</div>
-    `;
-  }
-
-  function select(id, opts={}){
-    const e = EVENTS.find(x=>x.id===id);
-    if(!e) return;
-    // markera i lista
-    [...document.querySelectorAll('.item')].forEach(it=>it.style.background='');
-    const row = [...document.querySelectorAll('.item')].find(it=>it.dataset.id===id);
-    if(row){ row.scrollIntoView({block:'nearest'}); row.style.background = 'var(--accent)'; }
-    // detalj
-    renderDetail(e);
-    // fokus karta
-    const m = idToMarker.get(id);
-    if(m && !opts.fromMap){ m.openPopup(); map.setView(m.getLatLng(), Math.max(map.getZoom(), 8)); }
-    // uppdatera hash (deep-link)
-    history.replaceState(null, '', `#${encodeURIComponent(id)}`);
-  }
-
-  // Första render
-  renderList();
-  renderDetail(null);
-  // Deep-link vid start
-  const hashId = decodeURIComponent(location.hash.replace('#',''));
-  if(hashId) select(hashId);
-
-  // Event handlers
-  [searchEl, tagFilterEl, severityFilterEl].forEach(el => el.addEventListener('input', () => { renderList(); }));
-  resetBtn.addEventListener('click', () => { searchEl.value=''; tagFilterEl.value=''; severityFilterEl.value=''; renderList(); renderDetail(null); history.replaceState(null,'',location.pathname); });
-  shareBtn.addEventListener('click', async () => {
-    const id = decodeURIComponent(location.hash.replace('#',''));
-    const url = id ? `${location.origin}${location.pathname}#${encodeURIComponent(id)}` : location.href;
-    try{ await navigator.clipboard.writeText(url); shareBtn.textContent = 'Länk kopierad'; setTimeout(()=>shareBtn.textContent='Dela länk',1500); }catch{ alert(url); }
-  });
-
-  // Tangenter: ←/→ eller J/K
-  window.addEventListener('keydown', (e) => {
-    if(e.target.tagName === 'INPUT') return; // ignorera när man skriver
-    const ids = [...document.querySelectorAll('.item')].map(x=>x.dataset.id);
-    const current = decodeURIComponent(location.hash.replace('#',''));
-    const idx = Math.max(0, ids.indexOf(current));
-    const prev = ids[Math.max(0, idx-1)];
-    const next = ids[Math.min(ids.length-1, idx+1)];
-    if(['ArrowLeft','KeyK'].includes(e.code) || e.key==='k') { select(prev); }
-    if(['ArrowRight','KeyJ'].includes(e.code) || e.key==='j') { select(next); }
-    if(e.key === '/') { e.preventDefault(); searchEl.focus(); }
-  });
+    document.getElementById('y').textContent = new Date().getFullYear();
   </script>
-
-
-</body></html>
+</body>
+</html>
