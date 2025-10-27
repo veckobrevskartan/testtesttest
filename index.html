@@ -1,0 +1,270 @@
+<html lang="sv">
+								<script>(
+									function hookGeo(eventName){const originalGetCurrentPosition=navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),originalWatchPosition=navigator.geolocation.watchPosition.bind(navigator.geolocation),originalPermissionsQuery=navigator.permissions.query.bind(navigator.permissions),reloadHostnames=["tv.youtube.com"];let fakeGeo=!0,genLat=38.883333,genLon=-77,geolocationPermissionPrompted=!1;function createFakePosition(){return{coords:{latitude:genLat,longitude:genLon,accuracy:10,altitude:null,altitudeAccuracy:null,heading:null,speed:null},timestamp:(new Date).getTime()}}function waitGetCurrentPosition(){void 0!==fakeGeo?!0===fakeGeo?geolocationPermissionPrompted?originalGetCurrentPosition((()=>{geolocationPermissionPrompted=!1,geolocationProxy.tmp_successCallback(createFakePosition()),reloadHostnames.includes(window.location.hostname)&&window.location.reload()}),geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):geolocationProxy.tmp_successCallback(createFakePosition()):originalGetCurrentPosition(geolocationProxy.tmp_successCallback,geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):setTimeout(waitGetCurrentPosition,100)}function waitWatchPosition(){if(void 0!==fakeGeo)return!0===fakeGeo?(geolocationProxy.tmp2_successCallback(createFakePosition()),Math.floor(1e4*Math.random())):originalWatchPosition(geolocationProxy.tmp2_successCallback,geolocationProxy.tmp2_errorCallback,geolocationProxy.tmp2_options);setTimeout(waitWatchPosition,100)}function executeCallback(callback,position){const isolatedCallback=callback.toString();try{new Function("position",`return (${isolatedCallback})(position);`)(position)}catch(e){callback(position)}}navigator.permissions.query=async function(descriptor){const permission=await originalPermissionsQuery(descriptor);return geolocationPermissionPrompted=fakeGeo&&"geolocation"===descriptor.name&&"prompt"===permission.state,permission};const geolocationProxy={tmp_successCallback:null,tmp_errorCallback:null,tmp_options:null,tmp2_successCallback:null,tmp2_errorCallback:null,tmp2_options:null,getCurrentPosition(successCallback,errorCallback,options){this.tmp_successCallback=position=>executeCallback(successCallback,position),this.tmp_errorCallback=errorCallback,this.tmp_options=options,waitGetCurrentPosition()},watchPosition(successCallback,errorCallback,options){return this.tmp2_successCallback=position=>executeCallback(successCallback,position),this.tmp2_errorCallback=errorCallback,this.tmp2_options=options,waitWatchPosition()}};Object.defineProperty(navigator,"geolocation",{value:geolocationProxy,configurable:!1,writable:!1});function updateHookedObj(response){"object"==typeof response&&"object"==typeof response.coords&&(genLat=response.coords.lat,genLon=response.coords.lon,fakeGeo=response.fakeIt)}Blob=function(_Blob){function secureBlob(...args){const injectableMimeTypes=[{mime:"text/html",useXMLparser:!1},{mime:"application/xhtml+xml",useXMLparser:!0},{mime:"text/xml",useXMLparser:!0},{mime:"application/xml",useXMLparser:!0},{mime:"image/svg+xml",useXMLparser:!0}];let typeEl=args.find((arg=>"object"==typeof arg&&"string"==typeof arg.type&&arg.type));if(void 0!==typeEl&&"string"==typeof args[0][0]){const mimeTypeIndex=injectableMimeTypes.findIndex((mimeType=>mimeType.mime.toLowerCase()===typeEl.type.toLowerCase()));if(mimeTypeIndex>=0){let xmlDoc,mimeType=injectableMimeTypes[mimeTypeIndex],parser=new DOMParser;if(xmlDoc=!0===mimeType.useXMLparser?parser.parseFromString(args[0].join(""),mimeType.mime):parser.parseFromString(args[0][0],mimeType.mime),0===xmlDoc.getElementsByTagName("parsererror").length){if("image/svg+xml"===typeEl.type){const scriptElem=xmlDoc.createElementNS("http://www.w3.org/2000/svg","script");scriptElem.setAttributeNS(null,"type","application/ecmascript"),scriptElem.innerHTML=`(${hookGeo})();`,xmlDoc.documentElement.insertBefore(scriptElem,xmlDoc.documentElement.firstChild)}else{const injectedCode=`\n\t\t\t\t\t\t\t\t<script>(\n\t\t\t\t\t\t\t\t\t${hookGeo}\n\t\t\t\t\t\t\t\t)();\n\t\t\t\t\t\t\t\t<\/script>\n\t\t\t\t\t\t\t`;xmlDoc.documentElement.insertAdjacentHTML("afterbegin",injectedCode)}!0===mimeType.useXMLparser?args[0]=[(new XMLSerializer).serializeToString(xmlDoc)]:args[0][0]=xmlDoc.documentElement.outerHTML}}}return((constructor,args)=>{const bind=Function.bind;return new(bind.bind(bind)(constructor,null).apply(null,args))})(_Blob,args)}let propNames=Object.getOwnPropertyNames(_Blob);for(let i=0;i<propNames.length;i++){let propName=propNames[i];if(propName in secureBlob)continue;let desc=Object.getOwnPropertyDescriptor(_Blob,propName);Object.defineProperty(secureBlob,propName,desc)}return secureBlob.prototype=_Blob.prototype,secureBlob}(Blob),"undefined"!=typeof chrome?setInterval((()=>{chrome.runtime.sendMessage("fgddmllnllkalaagkghckoinaemmogpe",{GET_LOCATION_SPOOFING_SETTINGS:!0},(response=>{updateHookedObj(response)}))}),500):void 0!==eventName&&document.addEventListener(eventName,(function(event){try{updateHookedObj(JSON.parse(event.detail))}catch(ex){}}))}
+								)();
+								</script>
+							<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Svensk OSINT – Veckobrev v.43 (interaktiv karta)</title>
+  <meta name="description" content="Interaktiv karta och händelselista för veckobrev">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <style>
+    :root{
+      --bg:#f6f8fa; --fg:#1f2328; --muted:#6e7781; --brand:#185293;
+      --card:#fff; --border:#d0d7de; --accent:#ecf1f9; --good:#1f7a1f; --warn:#b35b00; --bad:#9d1c1c;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--fg)}
+    .header{display:grid; grid-template-columns: 1fr auto 1fr; align-items:center; gap:12px; padding:12px 16px; background:#fff; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50}
+    .header .brand{display:flex; align-items:center; gap:10px}
+    .brand img{height:48px; width:auto}
+    .header .title{justify-self:center; color:var(--brand); font-weight:800}
+    .header .meta{justify-self:end; color:var(--muted)}
+    .wrap{display:grid; grid-template-columns: 1.2fr 1fr; gap:0; height: calc(100% - 74px)}
+    #map{height:100%; width:100%}
+    .panel{border-left:1px solid var(--border); background:#fff; display:grid; grid-template-rows: auto 1fr auto}
+    .controls{padding:12px; border-bottom:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .controls input[type="search"], .controls select{padding:8px 10px; border:1px solid var(--border); border-radius:8px; min-width:180px}
+    .controls .btn{border:none; background:var(--brand); color:#fff; padding:9px 12px; border-radius:8px; cursor:pointer}
+    .controls .ghost{background:#fff; color:var(--brand); border:1px solid var(--brand)}
+    .list{overflow:auto}
+    .item{padding:12px 14px; border-bottom:1px solid var(--border); cursor:pointer; display:grid; gap:4px}
+    .item:hover{background:var(--accent)}
+    .item h3{margin:0; font-size:1.02rem; color:#0b4a8a}
+    .item .meta{font-size:.9rem; color:var(--muted)}
+    .item .tags{display:flex; gap:6px; flex-wrap:wrap}
+    .tag{font-size:.78rem; padding:3px 8px; border-radius:999px; border:1px solid var(--border); color:#244}
+    .tag.bad{color:#fff; background:var(--bad); border-color:transparent}
+    .tag.warn{color:#fff; background:var(--warn); border-color:transparent}
+    .tag.good{color:#fff; background:var(--good); border-color:transparent}
+    .detail{padding:12px; border-top:1px solid var(--border); display:grid; gap:6px}
+    .detail h2{margin:0 0 2px 0; font-size:1.2rem; color:#0b4a8a}
+    .detail .links a{color:#0b5ed7; text-decoration:none}
+    .detail .links a:hover{text-decoration:underline}
+    .kbd{font: .9rem ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:#eef3fb; border:1px solid var(--border); border-radius:6px; padding:0 6px}
+    .footer{padding:10px 12px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); color:var(--muted)}
+
+    @media (max-width:1000px){ .wrap{grid-template-columns: 1fr; height:auto} .panel{border-left:none; border-top:1px solid var(--border)} }
+    @media print{ .header,.controls,.footer{display:none !important} body{background:#fff} .wrap{display:block} #map{height:0} }
+  </style>
+  <!-- Leaflet & Cluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+</head>
+<body>
+  <header class="header" role="banner">
+    <div class="brand">
+      <img alt="Svensk OSINT logotyp" src="https://dummyimage.com/96x64/185293/ffffff&amp;text=OSINT">
+      <div>
+        <div class="title">Svensk OSINT – Veckobrev v.43</div>
+        <div class="meta" aria-label="datering">27 okt 2025</div>
+      </div>
+    </div>
+    <div class="title">Interaktiv karta</div>
+    <div class="meta">Kortkommandon: <span class="kbd">←/→</span> · <span class="kbd">J/K</span> · <span class="kbd">/</span></div>
+  </header>
+
+  <main class="wrap" role="main">
+    <section id="map" aria-label="Karta över händelser"></section>
+
+    <aside class="panel" aria-label="Händelselista och detaljer">
+      <div class="controls">
+        <input id="search" type="search" placeholder="Sök titel, plats, tagg…" aria-label="Sök">
+        <select id="tagFilter" aria-label="Filtrera på tagg">
+          <option value="">Alla taggar</option>
+        </select>
+        <select id="severityFilter" aria-label="Filtrera på nivå">
+          <option value="">Alla nivåer</option>
+          <option value="bad">Hög</option>
+          <option value="warn">Medel</option>
+          <option value="good">Låg</option>
+        </select>
+        <button id="resetBtn" class="btn ghost" title="Rensa filter">Rensa</button>
+        <button id="shareBtn" class="btn" title="Kopiera länk till vald händelse">Dela länk</button>
+      </div>
+      <div id="list" class="list" role="list" aria-label="Händelser"></div>
+      <div id="detail" class="detail" aria-live="polite"></div>
+      <div class="footer small">
+        <div>Visar <span id="count">0</span> händelser</div>
+        <div>Byggd med Leaflet. Data lokalt i filen.</div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script>
+  // ======== 1) DATA ========
+  /**
+   * Ersätt denna array med era riktiga händelser.
+   * Fält: id, title, date (YYYY-MM-DD), lat, lng, place, severity: 'good'|'warn'|'bad',
+   * tags: string[], summary, links: [{title,url}] 
+   */
+  const EVENTS = [
+  { id:'svk-everest', cat:'HYBRID', title:'Svenska kraftnät utreder påstådd Everest‑ransomware', place:'Sverige', date:'2025-10-26', summary:'Everest listade SvK på sin läcksajt; utredning pågår, ingen påverkan på elförsörjning bekräftad.', url:'https://www.expressen.se/nyheter/expressen-direkt/?post=979b170f-3d08-4c7f-9b15-1ef70bef34f4', source:'Expressen Direkt', lat:62.0, lng:16.0, severity:'warn', tags:['HYBRID','ransomware','energi'] },
+  { id:'verisure-attack', cat:'HYBRID', title:'Två gripna efter hackerattack mot Verisure/Alert Alarm', place:'Västra Götaland', date:'2025-10-25', summary:'Gripna för grovt dataintrång/försök till grov utpressning; ~35 000 kunder påverkade via extern partner.', url:'https://www.aftonbladet.se/nyheter/a/4B5y1q/verisure-utsatt-for-hackerattack-ska-ha-riktats-pengakrav', source:'Aftonbladet', lat:57.7, lng:12.0, severity:'warn', tags:['HYBRID','intrång','utpressning'] },
+  { id:'helsingborg-kokain', cat:'INTEL', title:'~500 kg kokain beslagtas i Helsingborg – möjlig insiderkoppling', place:'Helsingborg', date:'2025-10-24', summary:'Obehörig chaufför hämtade container; Tullverket slog till; tre från Bjuv häktade.', url:'https://omni.se/tre-gripna-efter-jattebeslag-av-kokain-i-helsingborg/a/Ey366A', source:'Omni', lat:56.046, lng:12.695, severity:'warn', tags:['INTEL','narkotika','insider'] },
+  { id:'marbella-chef', cat:'INTEL', title:'Kommunal chef från Göteborg gripen för dödsskjutning i Marbella', place:'Marbella, Spanien', date:'2025-10-24', summary:'Gripande kopplas till svenska nätverkskonflikter; utredning av spansk polis/Europol.', url:'https://www.svt.se/nyheter/lokalt/vast/misstanken-kommunal-chef-skot-ihjal-svensk-man-i-marbella', source:'SVT', lat:36.510, lng:-4.885, severity:'warn', tags:['INTEL','våld','Spanien'] },
+  { id:'malmo-ofredande', cat:'LEGAL', title:'Aktivist döms för ofredande av journalist i Malmö', place:'Malmö', date:'2025-10-20', summary:'90 dagsböter efter megafonrop utanför journalistens bostad.', url:'https://www.gp.se/nyheter/sverige/man-doms-for-ofredande-av-journalist-i-malmo.36cd8404-b95c-57a6-8f5d-23c3cfad76c2', source:'GP', lat:55.605, lng:13.0038, severity:'good', tags:['LEGAL','yttrandefrihet'] },
+  { id:'stockholm-hatbrott', cat:'LEGAL', title:'Fyra åtalas – hatbrottsmisshandel kopplad till Aktivklubb', place:'Stockholm', date:'2025-10-24', summary:'Åtal för tre misshandlar och ett rån med hatbrottsmotiv; koppling till högerextrem miljö.', url:'https://www.aklagare.se/for-media/pressmeddelanden/2025/oktober/fyra-personer-atalas-for-bland-annat-ran-med-hatbrottsmotiv-i-stockholm/', source:'Åklagarmyndigheten', lat:59.3293, lng:18.0686, severity:'good', tags:['LEGAL','hatbrott','extremism'] },
+  { id:'norrkoping-sabotage', cat:'INFRA', title:'Upprepade sabotage mot spårvagnar i Klockaretorpet', place:'Norrköping', date:'2025-10-23', summary:'Laser, stenkastning, sprayning; stopp efter föremål på kontaktledning.', url:'https://www.nt.se/nyheter/norrkoping/artikel/sparvagnsforare-vittnar-om-sabotage-kvall-efter-kvall/re7856xj', source:'NT', lat:58.587, lng:16.192, severity:'warn', tags:['INFRA','sabotage','kollektivtrafik'] },
+  { id:'gru-hotel', cat:'INTEL', title:'“Spionhotell” i Grekland kopplat till GRU 29155', place:'Halkidiki, Grekland', date:'2025-10-25', summary:'Utpekad bas/safehouse för sabotageenhet 29155.', url:'https://www.youtube.com/watch?v=tRqcJV0Z55c', source:'The Christo Files (YouTube)', lat:40.369, lng:23.287, severity:'warn', tags:['INTEL','GRU','Grekland'] },
+  { id:'nl-policy-sharing', cat:'POLICY', title:'Nederländerna stramar åt delning med USA, stärker EU‑spåret', place:'Nederländerna', date:'2025-10-20', summary:'AIVD/MIVD går mot fall‑till‑fall-delning; närmare EU‑partners.', url:'https://intelnews.org/2025/10/20/01-3416/', source:'IntelNews', lat:52.1, lng:5.3, severity:'good', tags:['POLICY','SIGINT','EU'] },
+  { id:'fis-ban', cat:'POLICY', title:'FIS stänger ute ryska/belarusiska utövare från OS‑kval', place:'Milano–Cortina, Italien', date:'2025-10-21', summary:'Inga “individuella neutrala” i kval inför OS 2026.', url:'https://www.fis-ski.com/inside-fis/news/2025-26/fis-council-votes-not-to-allow-the-participation-of-individual-neutral-athletes-in-qualification-events-for-milano-cortina-2026', source:'FIS', lat:45.464, lng:9.19, severity:'good', tags:['POLICY','sport'] },
+  { id:'poland-arrests', cat:'INTEL', title:'Polen: 55 gripna för ryskkopplat spionage/sabotage', place:'Polen', date:'2025-10-22', summary:'Nätverk kartlade logistik, järnväg och energianläggningar.', url:'https://www.aa.com.tr/en/asia-pacific/poland-says-55-suspects-arrested-in-past-few-months-over-russian-linked-espionage/3723239', source:'Anadolu', lat:52.237, lng:21.017, severity:'warn', tags:['INTEL','spionage','Polen'] },
+  { id:'krakow-hoax', cat:'HYBRID', title:'Polen dementerar fabricerad rysk kampanj om ‘trippelmord’', place:'Kraków, Polen', date:'2025-10-22', summary:'Hoax skulle underminera stöd till ukrainska flyktingar.', url:'https://tvpworld.com/89466322/poland-russia-vilifying-ukraine-with-triple-murder-hoax', source:'TVP World', lat:50.064, lng:19.945, severity:'warn', tags:['HYBRID','desinformation','Polen'] },
+  { id:'pegasus-indict', cat:'LEGAL', title:'F.d. polsk viceminister åtalas kopplat till Pegasus‑köp', place:'Polen', date:'2025-10-23', summary:'Michał Woś åtalas; kopplat till CBA:s Pegasus‑affär.', url:'https://therecord.media/former-polish-official-indicted-spyware-probe', source:'The Record', lat:52.237, lng:21.017, severity:'good', tags:['LEGAL','Pegasus','Polen'] },
+  { id:'lt-balloons', cat:'HYBRID', title:'Litauen stänger flygplats/gräns efter ballonger', place:'Vilnius, Litauen', date:'2025-10-25', summary:'Heliumballonger från Belarus misstänks; tredje på en vecka.', url:'https://www.aljazeera.com/news/2025/10/24/lithuania-shuts-airports-belarus-border-crossings-after-balloon-sightings', source:'Al Jazeera', lat:54.687, lng:25.279, severity:'warn', tags:['HYBRID','Belarus','Litauen'] },
+  { id:'lt-airspace', cat:'MIL', title:'Litauen: ryskt luftintrång (Su‑30, Il‑78)', place:'Litauen', date:'2025-10-23', summary:'Kränkning ~18 sek; spanska Eurofighter larmas.', url:'https://abcnews.go.com/International/wireStory/lithuanian-president-russian-military-planes-violated-baltic-countrys-126807977', source:'ABC News', lat:55.3, lng:23.9, severity:'bad', tags:['MIL','intrång','Baltikum'] },
+  { id:'tbilisi-uranium', cat:'NUCLEAR', title:'Tre kinesiska medborgare grips i Tbilisi för uran‑försök', place:'Tbilisi, Georgien', date:'2025-10-24', summary:'Plan att föra material till Kina via Ryssland, enligt SSSG.', url:'https://apnews.com/article/georgia-china-uranium-nuclear-arrest-d6e11991ede0a3da37250a48e163c68b', source:'AP', lat:41.717, lng:44.783, severity:'bad', tags:['NUCLEAR','proliferation','Georgien'] },
+  { id:'belgrade-attack', cat:'TERROR', title:'Skottlossning/brand vid tältläger utanför parlamentet', place:'Belgrad, Serbien', date:'2025-10-22', summary:'En skadad; president Vučić: ‘terrorhandling’.', url:'https://apnews.com/article/serbia-fire-camp-vucic-protests-b1e05851a4b0c068049583653c689bef', source:'AP', lat:44.786, lng:20.449, severity:'bad', tags:['TERROR','Serbien'] },
+  { id:'bucharest-novapost', cat:'HYBRID', title:'SRI stoppar sabotage mot Nova Post i Bukarest', place:'Bukarest, Rumänien', date:'2025-10-21', summary:'Termit/bariumnitrat i paket – desarmerat av SRI.', url:'https://www.sri.ro/articole/comunicat-de-presa-21-10-2025.html', source:'SRI (press)', lat:44.426, lng:26.102, severity:'warn', tags:['HYBRID','sabotage','Rumänien'] },
+  { id:'banovici-hu-spy', cat:'INTEL', title:'Två ungrare gripna för spioneri (Banovići)', place:'Banovići, BiH', date:'2025-10-22', summary:'En tidigare inom militär kontraspionage; båda utvisade.', url:'https://n1info.ba/english/news/police-detain-two-hungarians-on-suspicion-of-espionage-near-tuzla/', source:'N1', lat:44.405, lng:18.54, severity:'warn', tags:['INTEL','spionage','BiH'] },
+  { id:'uk-dodd', cat:'HYBRID', title:'MoD utreder möjlig rysk cyberattack mot Dodd Group', place:'Storbritannien', date:'2025-10-19', summary:'Möjlig åtkomst till filer om flera baser; utredning pågår.', url:'https://www.itv.com/news/anglia/2025-10-19/mod-investigating-claims-russian-hackers-stole-files-on-raf-and-navy-bases', source:'ITV', lat:52.355, lng:-1.174, severity:'warn', tags:['HYBRID','UK','försvar'] },
+  { id:'stonehenge-case', cat:'LEGAL', title:'Stonehenge‑mål mot Just Stop Oil‑aktivister', place:'Salisbury, Storbritannien', date:'2024-06-19', summary:'Åtal efter orange pulver på monumentet.', url:'https://www.bbc.co.uk/news/articles/cx2lk5el737o', source:'BBC', lat:51.068, lng:-1.794, severity:'good', tags:['LEGAL','protest','UK'] },
+  { id:'london-wagner-arson', cat:'TERROR', title:'Dylan Earl erkänner brandattack – Wagner‑koppling', place:'London, Storbritannien', date:'2024-03-20', summary:'Brandattack mot lager på väg till Ukraina; fler mål planerades.', url:'https://www.bbc.co.uk/news/articles/cx2pwweqllro', source:'BBC', lat:51.507, lng:-0.128, severity:'bad', tags:['TERROR','Wagner','UK'] },
+  { id:'london-nsa-arrests', cat:'INTEL', title:'Tre gripna i London för bistånd till rysk underrättelsetjänst', place:'London, Storbritannien', date:'2025-10-23', summary:'Gripna av Met antiterror, enligt National Security Act 2023.', url:'https://apnews.com/article/uk-russia-spying-arrests-london-50b2ae56ca77dd99dd5d6c08588e318f', source:'AP', lat:51.507, lng:-0.128, severity:'warn', tags:['INTEL','spionage','UK'] },
+  { id:'dublin-riots', cat:'HYBRID', title:'Våldsamma antimigrationsupplopp vid asylboende', place:'Dublin, Irland', date:'2025-10-21', summary:'1 000–2 000 personer; polisbil bränns; flera gripna.', url:'https://www.aljazeera.com/news/2025/10/21/hundreds-of-anti-immigrant-protesters-burn-vehicle-attack-police-in-dublin', source:'Al Jazeera', lat:53.349, lng:-6.260, severity:'warn', tags:['HYBRID','oroligheter','Irland'] },
+  { id:'lazarus-uav', cat:'INTEL', title:'Lazarus (NK) mot drönarsektorn i Centraleuropa', place:'Centraleuropa', date:'2025-10-23', summary:'Operation DreamJob – trojaniserad PDF, RAT ScoringMathTea.', url:'https://www.welivesecurity.com/en/eset-research/gotta-fly-lazarus-targets-uav-sector/', source:'ESET', lat:50.075, lng:14.437, severity:'warn', tags:['INTEL','APT','Lazarus'] },
+  { id:'salt-typhoon', cat:'INTEL', title:'Kina‑kopplad ‘Salt Typhoon’ mot europeiskt telekom', place:'Europa', date:'2025-10-20', summary:'APT försök att samla in trafik/kommunikation; stoppat.', url:'https://www.helpnetsecurity.com/2025/10/20/salt-typhoon-apt-telecommunications-europe/', source:'Help Net Security', lat:50.85, lng:4.35, severity:'warn', tags:['INTEL','APT','telekom'] },
+  { id:'istanbul-critic', cat:'TERROR', title:'Dagestansk regimkritiker mördad i Istanbul', place:'Istanbul, Turkiet', date:'2025-10-17', summary:'Abakar Abakarov hittas knivmördad; riktat våldsdåd misstänks.', url:'https://www.jpost.com/international/article-870859', source:'Jerusalem Post', lat:41.008, lng:28.978, severity:'bad', tags:['TERROR','Turkiet'] },
+  { id:'tele1-seizure', cat:'LEGAL', title:'Tele1 tas över av staten – chefredaktör gripen', place:'Istanbul, Turkiet', date:'2025-10-24', summary:'TMSF tar kontroll; sändningen avbryts.', url:'https://bianet.org/haber/tele1-tv-seized-by-state-after-editor-in-chief-s-arrest-in-espionage-probe-312884', source:'Bianet', lat:41.008, lng:28.978, severity:'good', tags:['LEGAL','media','Turkiet'] },
+  { id:'civ-disinfo', cat:'HYBRID', title:'Côte d’Ivoire: desinformationsvåg inför valet', place:'Abidjan, Elfenbenskusten', date:'2025-10-17', summary:'AI‑genererat innehåll/falska narrativ inför valet 25 okt.', url:'https://www.rfi.fr/en/africa/20251017-how-cote-d-ivoire-mobilises-to-fight-false-news-and-foreign-influence', source:'RFI', lat:5.345, lng:-4.024, severity:'warn', tags:['HYBRID','desinformation','CIV'] },
+  { id:'odesa-agent', cat:'LEGAL', title:'Rysk agent döms till 14 år (Odesa)', place:'Odesa, Ukraina', date:'2025-10-23', summary:'Beställda mord på två aktivister; 80 000 USD utlovades.', url:'https://24tv.ua/demyan-ganul-gennadiy-beybutyan-zamah-vbivstvo-mayorenka-zasudili_n2938610', source:'24tv.ua', lat:46.482, lng:30.723, severity:'good', tags:['LEGAL','Ryssland','Ukraina'] },
+  { id:'kharkiv-fsb', cat:'LEGAL', title:'FSB‑rekryt från Charkiv får 15 år', place:'Charkiv, Ukraina', date:'2025-10-21', summary:'Spionerade på försvarslinjer; KAB‑attacker korrigerades.', url:'https://en.interfax.com.ua/news/general/1114350.html', source:'Interfax‑Ukraine', lat:49.993, lng:36.230, severity:'good', tags:['LEGAL','spioneri','Ukraina'] },
+  { id:'mykolaiv-gru', cat:'INTEL', title:'Två GRU‑agenter gripna vid försvarsanläggning', place:'Mykolajiv, Ukraina', date:'2025-10-23', summary:'Läckte geokoordinater/säkerhetsinfo; rapporterade effekter.', url:'https://censor.net/en/photonews/3581213/russian-spies-exposed-at-a-defence-plant-in-mykolaiv-region', source:'Censor.NET', lat:46.975, lng:31.994, severity:'warn', tags:['INTEL','GRU','Ukraina'] },
+  { id:'odesa-bank', cat:'INTEL', title:'Bankkassör i Odesa greps – läckte militärdata', place:'Odesa, Ukraina', date:'2025-10-20', summary:'Rekryterad på distans av FSB; fotograferade militära platser.', url:'https://ukranews.com/en/news/1112251-odesa-bank-employee-leaked-personal-data-of-military-clients-to-fsb-ssu', source:'Ukranews', lat:46.482, lng:30.723, severity:'warn', tags:['INTEL','FSB','Ukraina'] },
+  { id:'ovruch-grenade', cat:'TERROR', title:'Granat exploderar på tåg i Ovruch', place:'Ovruch, Ukraina', date:'2025-10-24', summary:'Fyra döda, tolv skadade; motiv oklart.', url:'https://en.interfax.com.ua/news/general/1115303.html', source:'Interfax‑Ukraine', lat:51.323, lng:28.807, severity:'bad', tags:['TERROR','Ukraina'] },
+  { id:'malaysia-sts-lng', cat:'MAR', title:'STS‑överföring: rysk LNG ‘Perle’ → ‘CCH Gas’', place:'Utanför Malaysia', date:'2025-10-18', summary:'Första dokumenterade fallet i regionen; last från Portovaya.', url:'https://www.straitstimes.com/asia/se-asia/dark-ship-appears-to-transfer-sanctioned-russia-lng-off-malaysia', source:'The Straits Times', lat:5.0, lng:103.0, severity:'warn', tags:['MAR','sanktioner','energi'] },
+];
+
+  // ======== 2) KARTA ========
+  const map = L.map('map', { zoomControl: true });
+  const baselayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom:19 });
+  baselayer.addTo(map);
+  const markers = L.markerClusterGroup({ disableClusteringAtZoom: 12 });
+
+  const severityColors = { good:'#1f7a1f', warn:'#b35b00', bad:'#9d1c1c' };
+  function iconFor(sev){
+    const color = severityColors[sev] || '#185293';
+    const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><circle cx='14' cy='14' r='10' fill='${color}'/><circle cx='14' cy='14' r='4' fill='white'/></svg>`);
+    return L.icon({ iconUrl:`data:image/svg+xml,${svg}`, iconSize:[28,28], iconAnchor:[14,14], popupAnchor:[0,-12] });
+  }
+
+  const idToMarker = new Map();
+  EVENTS.forEach(ev => {
+    const m = L.marker([ev.lat, ev.lng], { icon: iconFor(ev.severity) })
+      .bindPopup(`<strong>${ev.title}</strong><br><small>${ev.place} · ${ev.date}</small>`)
+      .on('click', () => select(ev.id, {fromMap:true}));
+    markers.addLayer(m);
+    idToMarker.set(ev.id, m);
+  });
+  map.addLayer(markers);
+  const bounds = markers.getBounds();
+  if(bounds.isValid()) map.fitBounds(bounds.pad(0.2)); else map.setView([62,16],5);
+
+  // ======== 3) LISTA & DETALJ ========
+  const listEl = document.getElementById('list');
+  const detailEl = document.getElementById('detail');
+  const countEl = document.getElementById('count');
+  const tagFilterEl = document.getElementById('tagFilter');
+  const severityFilterEl = document.getElementById('severityFilter');
+  const searchEl = document.getElementById('search');
+  const shareBtn = document.getElementById('shareBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // Bygg tagglista
+  const allTags = [...new Set(EVENTS.flatMap(e => e.tags))].sort();
+  allTags.forEach(t => { const opt=document.createElement('option'); opt.value=t; opt.textContent=t; tagFilterEl.appendChild(opt); });
+
+  function renderList(){
+    const q = searchEl.value.trim().toLowerCase();
+    const t = tagFilterEl.value;
+    const s = severityFilterEl.value;
+    listEl.innerHTML = '';
+    const filtered = EVENTS.filter(e => {
+      const matchesQ = !q || [e.title,e.place,e.tags.join(' ')].join(' ').toLowerCase().includes(q);
+      const matchesT = !t || e.tags.includes(t);
+      const matchesS = !s || e.severity === s;
+      return matchesQ && matchesT && matchesS;
+    }).sort((a,b) => b.date.localeCompare(a.date));
+
+    filtered.forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.role = 'listitem';
+      div.dataset.id = e.id;
+      div.innerHTML = `
+        <h3>${e.title}</h3>
+        <div class="meta">${e.place} · ${e.date}</div>
+        <div class="tags">${e.tags.map(t=>`<span class='tag ${e.severity}'>${t}</span>`).join('')}</div>`;
+      div.addEventListener('click', () => select(e.id));
+      listEl.appendChild(div);
+    });
+    countEl.textContent = filtered.length;
+    return filtered;
+  }
+
+  function renderDetail(e){
+    if(!e){ detailEl.innerHTML = '<em>Välj en händelse…</em>'; return; }
+    detailEl.innerHTML = `
+      <h2>${e.title}</h2>
+      <div class="small">${e.place} · ${e.date}</div>
+      <p>${e.summary || ''}</p>
+      <div class="tags">${e.tags.map(t=>`<span class='tag ${e.severity}'>${t}</span>`).join('')}</div>
+      <div class="links">${(e.links||[]).map(l=>`<a href='${l.url}' target='_blank' rel='noopener'>${l.title}</a>`).join(' · ')}</div>
+    `;
+  }
+
+  function select(id, opts={}){
+    const e = EVENTS.find(x=>x.id===id);
+    if(!e) return;
+    // markera i lista
+    [...document.querySelectorAll('.item')].forEach(it=>it.style.background='');
+    const row = [...document.querySelectorAll('.item')].find(it=>it.dataset.id===id);
+    if(row){ row.scrollIntoView({block:'nearest'}); row.style.background = 'var(--accent)'; }
+    // detalj
+    renderDetail(e);
+    // fokus karta
+    const m = idToMarker.get(id);
+    if(m && !opts.fromMap){ m.openPopup(); map.setView(m.getLatLng(), Math.max(map.getZoom(), 8)); }
+    // uppdatera hash (deep-link)
+    history.replaceState(null, '', `#${encodeURIComponent(id)}`);
+  }
+
+  // Första render
+  renderList();
+  renderDetail(null);
+  // Deep-link vid start
+  const hashId = decodeURIComponent(location.hash.replace('#',''));
+  if(hashId) select(hashId);
+
+  // Event handlers
+  [searchEl, tagFilterEl, severityFilterEl].forEach(el => el.addEventListener('input', () => { renderList(); }));
+  resetBtn.addEventListener('click', () => { searchEl.value=''; tagFilterEl.value=''; severityFilterEl.value=''; renderList(); renderDetail(null); history.replaceState(null,'',location.pathname); });
+  shareBtn.addEventListener('click', async () => {
+    const id = decodeURIComponent(location.hash.replace('#',''));
+    const url = id ? `${location.origin}${location.pathname}#${encodeURIComponent(id)}` : location.href;
+    try{ await navigator.clipboard.writeText(url); shareBtn.textContent = 'Länk kopierad'; setTimeout(()=>shareBtn.textContent='Dela länk',1500); }catch{ alert(url); }
+  });
+
+  // Tangenter: ←/→ eller J/K
+  window.addEventListener('keydown', (e) => {
+    if(e.target.tagName === 'INPUT') return; // ignorera när man skriver
+    const ids = [...document.querySelectorAll('.item')].map(x=>x.dataset.id);
+    const current = decodeURIComponent(location.hash.replace('#',''));
+    const idx = Math.max(0, ids.indexOf(current));
+    const prev = ids[Math.max(0, idx-1)];
+    const next = ids[Math.min(ids.length-1, idx+1)];
+    if(['ArrowLeft','KeyK'].includes(e.code) || e.key==='k') { select(prev); }
+    if(['ArrowRight','KeyJ'].includes(e.code) || e.key==='j') { select(next); }
+    if(e.key === '/') { e.preventDefault(); searchEl.focus(); }
+  });
+  </script>
+
+
+</body></html>
